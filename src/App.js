@@ -26,7 +26,8 @@ age: '8'
 
 class App extends React.Component{
 state = {
-  famille
+  famille,
+  isShow: false
 }
 
 handleClick = (num) => {
@@ -34,38 +35,61 @@ handleClick = (num) => {
   famille.membre1.age += num
  this.setState({famille})
 }
-handleChange = event => {
+handleChange = (event, id) => {
   const famille = {... this.state.famille}
   const nom = event.target.value
-  famille.membre1.nom = nom
+  famille[id].nom = nom
  this.setState({famille})
+}
+
+cacherNom = id => {
+  const famille = {... this.state.famille}
+  famille[id].nom = 'X'
+ this.setState({famille})
+}
+
+handleShowDescription = () =>{
+  const isShow = !this.state.isShow
+  this.setState({isShow})
 }
 
 render() {
    const {titre} = this.props
-   const { famille } = this.state
+   const { famille, isShow } = this.state
+
+let descrition = null
+
+if (isShow) {
+ descrition = (
+   <strong>C'est moi qui code Gros je suis dans le game</strong>)
+}
+
+const list = Object.keys(famille)
+    .map( membre => (
+    <Membre
+      key = {membre}
+      handleChange = { event => this.handleChange(event, membre)}
+      cacherNom = {() => this.cacherNom(membre)}
+      age = {famille[membre].age}
+      nom = {famille[membre].nom} />
+    ))
+
   return (
     <Fragment>
      <div className="App">
      <h1>{titre}</h1>
-      <p className="test">test de ouf</p>
-    <input value={famille.membre1.nom} onChange={this.handleChange} type='text'/>
-    <Membre
+    { list }
+    {/* <Membre
       nom= {famille.membre1.nom}
       age = {this.state.famille.membre1.age}>
-      <strong>C'est moi qui code Gros je suis dans le game</strong>
-    </Membre>
-    <Membre 
-      nom={this.state.famille.membre2.nom}
-      age = {this.state.famille.membre2.age}/>
-    <Membre 
-      nom={this.state.famille.membre3.nom}
-      age = {this.state.famille.membre3.age}/>
-    <Membre 
-      nom={this.state.famille.membre4.nom}
-      age = {this.state.famille.membre4.age}/>
-    <Button 
-      vieillir = {() => this.handleClick(2)}></Button>
+      {descrition}
+        <button onClick = {this.handleShowDescription}>
+        {isShow ? 'Cacher' : 'Montrer'}
+        </button>
+    </Membre> */}
+          
+    {/* <Button 
+      vieillir = {() => this.handleClick(2)}/> */}
     </div>
   
     </Fragment>
